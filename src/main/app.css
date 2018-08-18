@@ -1,3 +1,18 @@
 body {
     padding-top: 5rem;
 }
+
+.post-list-item {
+    border: 1px solid lightslategray;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    min-height: 140px;
+    padding: 15px;
+}
+
+.post-list-item .author {
+    margin-top: -10px;
+    margin-bottom: 5px;
+    color: gray;
+    font-size: 12px;
+}
