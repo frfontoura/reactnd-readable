@@ -16,3 +16,11 @@ body {
     color: gray;
     font-size: 12px;
 }
+
+.vote-button {
+    cursor: pointer;
+}
+
+.btn-space {
+    margin-right: 10px;
+}

@@ -38,7 +38,6 @@ class NavBar extends Component {
                                 </NavLink>
                             </li>
                         ))}
-
                     </ul>
                 </div>
             </nav>

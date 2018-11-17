@@ -1,2 +1,5 @@
 export const CATEGORIES_FETCHED = 'CATEGORIES_FETCHED'
+
 export const POSTS_FETCHED = 'POSTS_FETCHED'
+export const POSTS_VOTED = 'POSTS_VOTE'
+export const POSTS_SORT_BY = 'POSTS_SORT_BY'
