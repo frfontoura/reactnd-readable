@@ -9,7 +9,7 @@ import uuid from "uuid"
 import If from '../common/if'
 import PostListItem from './PostListItem'
 import PostModal from './PostModal'
-import { sortPostBy, addNewPost } from '../../actions/PostsActions'
+import { sortPostBy, addNewPost, showUpdate, showCreate, update } from '../../actions/PostsActions'
 
 class PostsList extends Component {
 
@@ -25,8 +25,13 @@ class PostsList extends Component {
         this.submit = this.submit.bind(this);
     }
 
-    openModal() {
+    openModal(post) {
         this.setState({ modalIsOpen: true });
+        if (post) {
+            this.props.showUpdate(post)
+        } else {
+            this.props.showCreate()
+        }
     }
 
     closeModal() {
@@ -34,13 +39,17 @@ class PostsList extends Component {
     }
 
     submit(values) {
-        const post = {
-            ...values,
-            id: uuid.v4(),
-            timestamp: Date.now()
+        if (values.id) {
+            this.props.update(values)
+        } else {
+            const post = {
+                ...values,
+                id: uuid.v4(),
+                timestamp: Date.now()
+            }
+            this.props.addNewPost(post)
         }
         this.closeModal()
-        this.props.addNewPost(post)
     }
 
     render() {
@@ -57,8 +66,8 @@ class PostsList extends Component {
                 <If test={posts.length > 0}>
                     <div className='row'>
                         <div className="col-sm-12">
-                            <button className="btn btn-outline-primary btn-sm float-left" type="submit" onClick={this.openModal}><MdNoteAdd />&nbsp;New Post</button>
-                            <PostModal modalIsOpen={this.state.modalIsOpen} closeModal={this.closeModal} onSubmit={this.submit}/>
+                            <button className="btn btn-outline-primary btn-sm float-left" type="submit" onClick={() => this.openModal()}><MdNoteAdd />&nbsp;New Post</button>
+                            <PostModal modalIsOpen={this.state.modalIsOpen} closeModal={this.closeModal} onSubmit={this.submit} isEdit={false} />
                             <div className='float-right'>
                                 Order by &nbsp;
                                 <div className='btn-group btn-group-sm' role='group' aria-label='Order by'>
@@ -69,7 +78,7 @@ class PostsList extends Component {
                         </div>
                     </div>
                     {posts.map(post => (
-                        <PostListItem key={post.id} post={post} />
+                        <PostListItem key={post.id} post={post} openModal={this.openModal} />
                     ))}
                 </If>
 
@@ -86,5 +95,5 @@ PostsList.propTypes = {
 }
 
 const mapStateToProps = state => ({ posts: state.posts.posts, orderBy: state.posts.orderBy })
-const mapDispatchToProps = dispatch => bindActionCreators({ sortPostBy, addNewPost }, dispatch)
+const mapDispatchToProps = dispatch => bindActionCreators({ sortPostBy, addNewPost, showUpdate, showCreate, update }, dispatch)
 export default connect(mapStateToProps, mapDispatchToProps)(PostsList)

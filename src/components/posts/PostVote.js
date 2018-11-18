@@ -7,8 +7,6 @@ import { vote } from '../../actions/PostsActions'
 
 class PostVote extends Component{
 
-    //upVote={() => vote(post.id, 'upVote')} downVote={() => vote(post.id, 'downVote')}
-
     render() {
         const { postId, voteScore, vote } = this.props
 

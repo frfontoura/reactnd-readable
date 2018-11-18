@@ -24,3 +24,21 @@ body {
 .btn-space {
     margin-right: 10px;
 }
+
+.comments-content {
+    border: 1px solid lightslategray;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    min-height: 140px;
+    padding: 15px;
+}
+
+.comment-line {
+    margin: 10px 0 15px 0;
+    padding: 5px 0 5px 0;
+    border-top: 0.5px dotted lightslategray;
+}
+
+.comments-content h5:first-of-type {
+    margin-bottom: 25px;
+}

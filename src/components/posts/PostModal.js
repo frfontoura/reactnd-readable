@@ -35,7 +35,7 @@ class PostModal extends Component {
             >
                 <div className='row'>
                     <div className="col-sm-12">
-                        <div style={{ borderBottom: '2px solid lightgray', marginBottom: '20px'}}>
+                        <div style={{ borderBottom: '2px solid lightgray', marginBottom: '20px' }}>
                             <If test={!this.props.isEdit}>
                                 <h3>Create a new post</h3>
                             </If>
@@ -46,18 +46,12 @@ class PostModal extends Component {
 
                         <form onSubmit={handleSubmit}>
                             <div className='form-group'>
-                                <If test={!this.props.isEdit}>
-                                    <Field name="category" type="text" component={renderSelectField} label="Category" validate={[required]}>
-                                        <option />
-                                        {this.props.categories.map(cat => (
-                                            <option value={cat.path} key={cat.path}>{_.capitalize(cat.name)}</option>
-                                        ))}
-                                    </Field>
-                                </If>
-                                <If test={this.props.isEdit}>
-                                    <label>Category</label>
-                                    <p>asdf</p>
-                                </If>
+                                <Field name="category" type="text" component={renderSelectField} label="Category" validate={[required]} disabled={this.props.isEdit}>
+                                    <option />
+                                    {this.props.categories.map(cat => (
+                                        <option value={cat.path} key={cat.path}>{_.capitalize(cat.name)}</option>
+                                    ))}
+                                </Field>
                             </div>
 
                             <div className='form-group'>
@@ -69,7 +63,7 @@ class PostModal extends Component {
                             </div>
 
                             <div className='form-group'>
-                                <Field name="author" type="text" component={renderField} label="Author" validate={[required]} />
+                                <Field name="author" type="text" component={renderField} label="Author" validate={[required]} disabled={this.props.isEdit}/>
                             </div>
 
                             <div >
@@ -90,5 +84,5 @@ class PostModal extends Component {
 
 PostModal = reduxForm({ form: 'post' })(PostModal)
 
-const mapStateToProps = state => ({ categories: state.navBar.categories })
+const mapStateToProps = state => ({ categories: state.navBar.categories, isEdit: state.posts.isEdit })
 export default connect(mapStateToProps, null)(PostModal)
