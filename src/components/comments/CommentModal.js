@@ -27,7 +27,7 @@ class PostModal extends Component {
                 style={customStyles}
                 contentLabel='Post'
             >
-                <CommentsForm closeModal={this.props.closeModal} onSubmit={this.props.onSubmit}/>
+                <CommentsForm closeModal={this.props.closeModal} onSubmit={this.props.onSubmit} isEdit={this.props.isEdit}/>
             </Modal>
         )
     }
