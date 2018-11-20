@@ -1,6 +1,6 @@
 import { COMMENTS_FETCHED, COMMENTS_VOTED, COMMENTS_SHOW_UPDATE, COMMENTS_SHOW_CREATE } from '../actions/ActionTypes'
 
-const INITIAL_STATE = { comments: [] }
+const INITIAL_STATE = { comments: [], commentEdit: {} }
 
 export default function (state = INITIAL_STATE, action) {
     switch (action.type) {
@@ -17,11 +17,13 @@ export default function (state = INITIAL_STATE, action) {
         case COMMENTS_SHOW_UPDATE:
             return {
                 ...state,
+                commentEdit: action.payload,
                 isEdit: true
             }
         case COMMENTS_SHOW_CREATE:
             return {
                 ...state,
+                commentEdit: {},
                 isEdit: false
             }
         default:

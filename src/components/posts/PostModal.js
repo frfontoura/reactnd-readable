@@ -71,7 +71,7 @@ class PostModal extends Component {
                                 <button type='button' className='btn btn-secundary btn-space' onClick={this.props.closeModal}>Cancel</button>
 
                                 <If test={this.props.isEdit}>
-                                    <button type='button' className='btn btn-danger float-right'>Delete</button>
+                                    <button type='button' className='btn btn-danger float-right' onClick={() => this.props.onDelete(this.props.postView.id)}>Delete</button>
                                 </If>
                             </div>
                         </form>
@@ -84,5 +84,5 @@ class PostModal extends Component {
 
 PostModal = reduxForm({ form: 'post' })(PostModal)
 
-const mapStateToProps = state => ({ categories: state.navBar.categories, isEdit: state.posts.isEdit })
+const mapStateToProps = state => ({ categories: state.navBar.categories, isEdit: state.posts.isEdit, postView: state.posts.postView })
 export default connect(mapStateToProps, null)(PostModal)

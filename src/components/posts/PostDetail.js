@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux'
 import PostVote from './PostVote'
 import PostModal from './PostModal'
 import CommentList from '../comments/CommentsList'
-import { loadPost } from '../../actions/PostsActions'
+import { loadPost, showUpdate, update, deletePost } from '../../actions/PostsActions'
 
 class PostDetail extends Component {
 
@@ -19,6 +19,8 @@ class PostDetail extends Component {
 
         this.openModal = this.openModal.bind(this)
         this.closeModal = this.closeModal.bind(this)
+        this.submit = this.submit.bind(this)
+        this.onDelete = this.onDelete.bind(this)
     }
 
     componentDidMount() {
@@ -32,30 +34,50 @@ class PostDetail extends Component {
         this.load(postId, prevPostId)
     }
 
-    load(postId, prevPostId = '') {
+    async load(postId, prevPostId = '') {
         if (postId !== prevPostId) {
-            this.props.loadPost(postId)
+            await this.props.loadPost(postId)
+
+            if(!this.props.post.id) {
+                this.props.history.push('/404')
+            }
         }
     }
 
     openModal() {
         this.setState({ modalIsOpen: true })
+        this.props.showUpdate(this.props.post)
     }
 
     closeModal() {
         this.setState({ modalIsOpen: false })
     }
 
+    submit(values) {
+        if (values.id) {
+            this.props.update(values)
+            this.props.loadPost(values.id)
+        }
+        this.closeModal()
+    }
+
+    onDelete(postId) {
+        this.props.deletePost(postId)
+        this.closeModal()
+        this.props.history.push('/')
+    }
+
     render() {
         const { post } = this.props
         var postDate = new Date(post.timestamp ? post.timestamp : Date.now())
+
         return (
             <div className='row'>
                 <div className="col-sm-12">
                     <div className='post-list-item'>
                         <button className="btn btn-light btn-sm float-right" type="submit" title='Edit' onClick={this.openModal}><MdEdit /></button>
 
-                        <PostModal modalIsOpen={this.state.modalIsOpen} closeModal={this.closeModal} isEdit={true} postEdit={post}/>
+                        <PostModal modalIsOpen={this.state.modalIsOpen} closeModal={this.closeModal} onSubmit={this.submit}  onDelete={this.onDelete} />
 
                         <p className='author'>{post.author} - {postDate.toLocaleDateString()}</p>
                         <h5>{post.title}</h5>
@@ -73,5 +95,5 @@ class PostDetail extends Component {
 }
 
 const mapStateToProps = state => ({ post: state.posts.postView })
-const mapDispatchToProps = dispatch => bindActionCreators({ loadPost }, dispatch)
+const mapDispatchToProps = dispatch => bindActionCreators({ loadPost, showUpdate, update, deletePost }, dispatch)
 export default connect(mapStateToProps, mapDispatchToProps)(PostDetail)

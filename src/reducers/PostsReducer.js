@@ -30,7 +30,8 @@ export default function(state = INITIAL_STATE, action) {
         case POSTS_SHOW_UPDATE:
             return {
                 ...state,
-                isEdit: true
+                isEdit: true,
+                postView: action.payload
             }
         case POSTS_SHOW_CREATE:
             return {

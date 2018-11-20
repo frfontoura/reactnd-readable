@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 import { MdNoteAdd, MdEdit } from 'react-icons/md'
 import uuid from "uuid"
 
-import { getComments, addNewComment, showUpdate, showCreate, update } from '../../actions/CommentsActions'
+import { getComments, addNewComment, showUpdate, showCreate, update, deleteComment } from '../../actions/CommentsActions'
 import CommentsVote from './CommentsVote'
 import CommentsModal from './CommentModal'
 
@@ -20,7 +20,8 @@ class CommmentsList extends Component {
 
         this.openModal = this.openModal.bind(this)
         this.closeModal = this.closeModal.bind(this)
-        this.submit = this.submit.bind(this)
+        this.onSubmit = this.onSubmit.bind(this)
+        this.onDelete = this.onDelete.bind(this)
     }
 
     componentDidMount() {
@@ -53,7 +54,7 @@ class CommmentsList extends Component {
         this.setState({ modalIsOpen: false })
     }
 
-    submit(values) {
+    onSubmit(values) {
         if (values.id) {
             this.props.update(values)
         } else {
@@ -68,6 +69,11 @@ class CommmentsList extends Component {
         this.closeModal()
     }
 
+    onDelete() {
+        this.props.deleteComment(this.props.commentEdit)
+        this.closeModal()
+    }
+
     render() {
         const { comments } = this.props
 
@@ -76,7 +82,7 @@ class CommmentsList extends Component {
                 <div className="col-sm-12">
                     <div className='comments-content'>
                         <button className="btn btn-outline-primary btn-sm float-right" type="submit" onClick={() => this.openModal()}><MdNoteAdd />&nbsp;New Comment</button>
-                        <CommentsModal modalIsOpen={this.state.modalIsOpen} closeModal={this.closeModal} onSubmit={this.submit} isEdit={this.props.isEdit} />
+                        <CommentsModal modalIsOpen={this.state.modalIsOpen} closeModal={this.closeModal} onSubmit={this.onSubmit} onDelete={this.onDelete} isEdit={this.props.isEdit} />
 
                         <h5>Comments</h5>
                         {comments.map(comment => (
@@ -94,6 +100,6 @@ class CommmentsList extends Component {
     }
 }
 
-const mapStateToProps = state => ({ comments: state.comments.comments, isEdit: state.comments.isEdit })
-const mapDispatchToProps = dispatch => bindActionCreators({ getComments, addNewComment, showUpdate, showCreate, update }, dispatch)
+const mapStateToProps = state => ({ comments: state.comments.comments, isEdit: state.comments.isEdit, commentEdit: state.comments.commentEdit })
+const mapDispatchToProps = dispatch => bindActionCreators({ getComments, addNewComment, showUpdate, showCreate, update, deleteComment }, dispatch)
 export default connect(mapStateToProps, mapDispatchToProps)(CommmentsList)

@@ -31,21 +31,11 @@ export const vote = (commentId, vote) => dispatch => (
         }))
 )
 
-export const addNewComment = (comment) => dispatch => (
-    axios.post(`${consts.API_URL}/comments`, comment, HEADERS)
-        .then((response) => {
-            toastr.success('Success', 'The new comment was successfully completed')
-            dispatch(initialize('commentsForm', INITIAL_VALUE))
-            dispatch(getComments(comment.parentId))
-        }).catch (e => {
-            toastr.error('Error', e.response.data.error)
-        })
-)
-
 export const showUpdate = (comment) => dispatch => {
     dispatch(initialize('commentForm', comment))
     dispatch({
-        type: COMMENTS_SHOW_UPDATE
+        type: COMMENTS_SHOW_UPDATE,
+        payload: comment
     })
 }
 
@@ -56,13 +46,35 @@ export const showCreate = () => dispatch => {
     })
 }
 
-export const update = (comment) => dispatch => (
-    axios.put(`${consts.API_URL}/comments/${comment.id}`, comment, HEADERS)
+export const addNewComment = (comment) => dispatch => (
+    axios.post(`${consts.API_URL}/comments`, comment, HEADERS)
         .then((response) => {
-            toastr.success('Success', 'The publication was successfully updated')
-            dispatch(initialize('post', INITIAL_VALUE))
-            dispatch(getComments(comment.parentId))
+            onFormClose(dispatch, 'The new comment was successfully completed', comment.parentId)
         }).catch (e => {
             toastr.error('Error', e.response.data.error)
         })
 )
+
+export const update = (comment) => dispatch => (
+    axios.put(`${consts.API_URL}/comments/${comment.id}`, comment, HEADERS)
+        .then((response) => {
+            onFormClose(dispatch, 'The publication was successfully updated', comment.parentId)
+        }).catch (e => {
+            toastr.error('Error', e.response.data.error)
+        })
+)
+
+export const deleteComment = (comment) => dispatch => (
+    axios.delete(`${consts.API_URL}/comments/${comment.id}`, HEADERS)
+        .then((response) => {
+            onFormClose(dispatch, 'The publication was successfully deleted', comment.parentId)
+        }).catch (e => {
+            toastr.error('Error', e.response.data.error)
+        })
+)
+
+const onFormClose = (dispatch, msg, parentId) => {
+    toastr.success('Success', msg)
+    dispatch(initialize('post', INITIAL_VALUE))
+    dispatch(getComments(parentId))
+}

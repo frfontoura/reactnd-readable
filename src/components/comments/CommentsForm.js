@@ -34,7 +34,7 @@ class CommentForm extends Component {
                             <button type='button' className='btn btn-secundary btn-space' onClick={this.props.closeModal}>Cancel</button>
 
                             <If test={this.props.isEdit}>
-                                <button type='button' className='btn btn-danger float-right'>Delete</button>
+                                <button type='button' className='btn btn-danger float-right' onClick={this.props.onDelete} >Delete</button>
                             </If>
                         </div>
                     </form>

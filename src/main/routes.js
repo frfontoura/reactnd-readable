@@ -9,8 +9,9 @@ import PostDetail from '../components/posts/PostDetail'
 export default props => (
     <Switch>
         <Route exact path='/' component={Home} />
+        <Route exact path='/404' component={NotFound} />
         <Route exact path='/:category' component={CategoryPosts} />
         <Route exact path='/:category/:postId' component={PostDetail} />
-        <Route path='*' component={NotFound} />
+        <Route component={NotFound} />
     </Switch>
 )

@@ -40,23 +40,10 @@ export const vote = (postId, vote) => dispatch => (
         }))
 )
 
-export const sortPostBy = (orderBy) => (
-    {
-        type: POSTS_SORT_BY,
-        payload: orderBy
-    }
-)
-
-export const addNewPost = (post) => dispatch => (
-    axios.post(`${consts.API_URL}/posts`, post, HEADERS)
-        .then((response) => {
-            toastr.success('Success', 'The new publication was successfully completed')
-            dispatch(initialize('post', INITIAL_VALUE))
-            dispatch(getPosts())
-        }).catch (e => {
-            toastr.error('Error', e.response.data.error)
-        })
-)
+export const sortPostBy = (orderBy) => ({
+    type: POSTS_SORT_BY,
+    payload: orderBy
+})
 
 export const loadPost = (postId) => dispatch => (
     axios.get(`${consts.API_URL}/posts/${postId}`, HEADERS)
@@ -64,14 +51,15 @@ export const loadPost = (postId) => dispatch => (
             type: POSTS_POST_FETCHED,
             payload: response.data
         })).catch(e => {
-             toastr.error('Error', e.response.data.error)
+            toastr.error('Error', e.response.data.error)
         })
 )
 
 export const showUpdate = (post) => dispatch => {
     dispatch(initialize('post', post))
     dispatch({
-        type: POSTS_SHOW_UPDATE
+        type: POSTS_SHOW_UPDATE,
+        payload: post
     })
 }
 
@@ -82,13 +70,42 @@ export const showCreate = () => dispatch => {
     })
 }
 
-export const update = (post) => dispatch => (
-    axios.put(`${consts.API_URL}/posts/${post.id}`, post, HEADERS)
+export const addNewPost = (post, title) => dispatch => (
+    axios.post(`${consts.API_URL}/posts`, post, HEADERS)
         .then((response) => {
-            toastr.success('Success', 'The publication was successfully updated')
-            dispatch(initialize('post', INITIAL_VALUE))
-            dispatch(getPosts())
-        }).catch (e => {
+            onFormClose(dispatch, 'The new publication was successfully completed', title)
+        }).catch(e => {
             toastr.error('Error', e.response.data.error)
         })
 )
+
+export const update = (post, title) => dispatch => (
+    axios.put(`${consts.API_URL}/posts/${post.id}`, post, HEADERS)
+        .then((response) => {
+            onFormClose(dispatch, 'The publication was successfully updated', title)
+        }).catch(e => {
+            toastr.error('Error', e.response.data.error)
+        })
+)
+
+export const deletePost = (postId, title) => dispatch => (
+    axios.delete(`${consts.API_URL}/posts/${postId}`, HEADERS)
+        .then((response) => {
+            onFormClose(dispatch, 'The publication was successfully deleted', title)
+        }).catch(e => {
+            toastr.error('Error', e.response.data.error)
+        })
+)
+
+const onFormClose = (dispatch, msg, title) => {
+    toastr.success('Success', msg)
+    dispatch(initialize('post', INITIAL_VALUE))
+
+    if (title !== undefined) {
+        if ('home' === title) {
+            dispatch(getPosts())
+        } else {
+            dispatch(getPostsByCategory(title))
+        }
+    }
+}

@@ -9,24 +9,25 @@ import uuid from "uuid"
 import If from '../common/if'
 import PostListItem from './PostListItem'
 import PostModal from './PostModal'
-import { sortPostBy, addNewPost, showUpdate, showCreate, update } from '../../actions/PostsActions'
+import { sortPostBy, addNewPost, showUpdate, showCreate, update, deletePost } from '../../actions/PostsActions'
 
 class PostsList extends Component {
 
     constructor() {
-        super();
+        super()
 
         this.state = {
             modalIsOpen: false
-        };
+        }
 
-        this.openModal = this.openModal.bind(this);
-        this.closeModal = this.closeModal.bind(this);
-        this.submit = this.submit.bind(this);
+        this.openModal = this.openModal.bind(this)
+        this.closeModal = this.closeModal.bind(this)
+        this.submit = this.submit.bind(this)
+        this.onDelete = this.onDelete.bind(this)
     }
 
     openModal(post) {
-        this.setState({ modalIsOpen: true });
+        this.setState({ modalIsOpen: true })
         if (post) {
             this.props.showUpdate(post)
         } else {
@@ -35,20 +36,25 @@ class PostsList extends Component {
     }
 
     closeModal() {
-        this.setState({ modalIsOpen: false });
+        this.setState({ modalIsOpen: false })
     }
 
     submit(values) {
         if (values.id) {
-            this.props.update(values)
+            this.props.update(values, this.props.title)
         } else {
             const post = {
                 ...values,
                 id: uuid.v4(),
                 timestamp: Date.now()
             }
-            this.props.addNewPost(post)
+            this.props.addNewPost(post, this.props.title)
         }
+        this.closeModal()
+    }
+
+    onDelete(postId) {
+        this.props.deletePost(postId, this.props.title)
         this.closeModal()
     }
 
@@ -63,11 +69,13 @@ class PostsList extends Component {
                         <h1>{_.capitalize(title)}</h1>
                     </div>
                 </div>
-                <If test={posts.length > 0}>
-                    <div className='row'>
-                        <div className="col-sm-12">
-                            <button className="btn btn-outline-primary btn-sm float-left" type="submit" onClick={() => this.openModal()}><MdNoteAdd />&nbsp;New Post</button>
-                            <PostModal modalIsOpen={this.state.modalIsOpen} closeModal={this.closeModal} onSubmit={this.submit} isEdit={false} />
+                <div className='row'>
+                    <div className="col-sm-12">
+
+                        <button className="btn btn-outline-primary btn-sm" type="submit" onClick={() => this.openModal()}><MdNoteAdd />&nbsp;New Post</button>
+                        <PostModal modalIsOpen={this.state.modalIsOpen} closeModal={this.closeModal} onSubmit={this.submit} onDelete={this.onDelete} />
+
+                        <If test={posts.length > 0}>
                             <div className='float-right'>
                                 Order by &nbsp;
                                 <div className='btn-group btn-group-sm' role='group' aria-label='Order by'>
@@ -75,15 +83,18 @@ class PostsList extends Component {
                                     <button type='button' onClick={() => sortPostBy('voteScore')} className={`btn btn-${orderBy === 'voteScore' ? 'primary' : 'light'}`}>Score</button>
                                 </div>
                             </div>
-                        </div>
+                            {posts.map(post => (
+                                <PostListItem key={post.id} post={post} openModal={this.openModal} />
+                            ))}
+                        </If>
+
                     </div>
-                    {posts.map(post => (
-                        <PostListItem key={post.id} post={post} openModal={this.openModal} />
-                    ))}
-                </If>
+                </div>
 
                 <If test={posts.length === 0}>
-                    <h6>Nenhum post encontrado</h6>
+                    <div style={{ marginTop:'20px' }}>
+                        <h6>Nenhum post encontrado</h6>
+                    </div>
                 </If>
             </div >
         )
@@ -95,5 +106,5 @@ PostsList.propTypes = {
 }
 
 const mapStateToProps = state => ({ posts: state.posts.posts, orderBy: state.posts.orderBy })
-const mapDispatchToProps = dispatch => bindActionCreators({ sortPostBy, addNewPost, showUpdate, showCreate, update }, dispatch)
+const mapDispatchToProps = dispatch => bindActionCreators({ sortPostBy, addNewPost, showUpdate, showCreate, update, deletePost }, dispatch)
 export default connect(mapStateToProps, mapDispatchToProps)(PostsList)

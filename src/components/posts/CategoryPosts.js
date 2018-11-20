@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
@@ -25,11 +26,19 @@ class CategoryPosts extends Component {
     }
 
     render() {
-        return (
-            <PostsList title={this.props.match.params.category} />
-        )
+        const category = this.props.match.params.category
+        const filtered = this.props.categories.filter(c => c.path === category)
+
+        if(filtered.length > 0){
+            return (
+                <PostsList title={this.props.match.params.category} />
+            )
+        } else {
+            return <Redirect to='/404' />
+        }
     }
 }
 
+const mapStateToProps = state => ({ categories: state.navBar.categories })
 const mapDispatchToProps = dispatch => bindActionCreators({ getPostsByCategory }, dispatch)
-export default connect(null, mapDispatchToProps)(CategoryPosts)
+export default connect(mapStateToProps, mapDispatchToProps)(CategoryPosts)
