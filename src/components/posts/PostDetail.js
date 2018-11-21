@@ -6,6 +6,8 @@ import { bindActionCreators } from 'redux'
 import PostVote from './PostVote'
 import PostModal from './PostModal'
 import CommentList from '../comments/CommentsList'
+import Comment from '../common/Comment'
+
 import { loadPost, showUpdate, update, deletePost } from '../../actions/PostsActions'
 
 class PostDetail extends Component {
@@ -38,7 +40,7 @@ class PostDetail extends Component {
         if (postId !== prevPostId) {
             await this.props.loadPost(postId)
 
-            if(!this.props.post.id) {
+            if (!this.props.post.id) {
                 this.props.history.push('/404')
             }
         }
@@ -77,17 +79,17 @@ class PostDetail extends Component {
                     <div className='post-list-item'>
                         <button className="btn btn-light btn-sm float-right" type="submit" title='Edit' onClick={this.openModal}><MdEdit /></button>
 
-                        <PostModal modalIsOpen={this.state.modalIsOpen} closeModal={this.closeModal} onSubmit={this.submit}  onDelete={this.onDelete} />
+                        <PostModal modalIsOpen={this.state.modalIsOpen} closeModal={this.closeModal} onSubmit={this.submit} onDelete={this.onDelete} />
 
                         <p className='author'>{post.author} - {postDate.toLocaleDateString()}</p>
                         <h5>{post.title}</h5>
                         <p>
                             {post.body}
                         </p>
+                        <Comment count={post.commentCount} />
                         <PostVote voteScore={post.voteScore} postId={post.id} />
                     </div>
-
-                    <CommentList postId={post.id}/>
+                    <CommentList postId={post.id} />
                 </div>
             </div>
         )

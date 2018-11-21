@@ -4,6 +4,7 @@ import { initialize } from 'redux-form'
 import { toastr } from 'react-redux-toastr'
 
 import { COMMENTS_FETCHED, COMMENTS_VOTED, COMMENTS_SHOW_UPDATE, COMMENTS_SHOW_CREATE } from './ActionTypes'
+import { loadPost } from './PostsActions'
 
 const HEADERS = { headers: { Authorization: "b2OXKhyvbKSbDktxm7DT24DPBNNf9PMS" } }
 
@@ -77,4 +78,5 @@ const onFormClose = (dispatch, msg, parentId) => {
     toastr.success('Success', msg)
     dispatch(initialize('post', INITIAL_VALUE))
     dispatch(getComments(parentId))
+    dispatch(loadPost(parentId))
 }
